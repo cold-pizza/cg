@@ -4,8 +4,7 @@ import "./style.scss";
 import { OnChangeType, KeyDownType } from "../../types";
 
 const Main: React.FC = function () {
-    const randomNum = Math.random() * 10;
-    const randomArr = Math.floor(randomNum);
+    const randomNum = Math.floor(Math.random() * 10);
     const Menu = [
         "아메리카노(I)",
         "아메리카노(H)",
@@ -24,17 +23,19 @@ const Main: React.FC = function () {
     // 1초마다 80px 다운.
     // 반정도 내려오면 다음 단어 다운.
     // 데드라인 충돌시 하트 삭제. 최근단어 삭제. 큐형식.
-    console.log(Menu[randomArr]);
+    console.log(Menu[randomNum]);
     const history = useHistory();
     const [heart, setHeart] = useState("❤️ ❤️ ❤️");
     const [inputs, setInputs] = useState({ material: "" });
     const [stack, setStack] = useState([undefined, "", ""]);
+    const [displaySwitch, setDisplaySwitch] = useState("block");
     const onChange: OnChangeType = function (e, state, setState) {
         setState({ ...state, [e.target.name]: e.target.value });
     };
     console.log(inputs);
 
     // 1초마다 떨어지는 함수.
+    // + 데드라인 오버시 hide. display -> none.
     const dropDownMenu = function () {
         let routine = setInterval(() => {
             setDownMenuNUm((downMenuNum) => downMenuNum + 97);
@@ -43,12 +44,14 @@ const Main: React.FC = function () {
             clearInterval(routine);
             console.log("정지");
         }, 5000);
+        setTimeout(() => {
+            setDisplaySwitch("none");
+        }, 6000);
     };
 
     useEffect(() => {
         dropDownMenu();
     }, []);
-    // + 데드라인 왔을 때 단어 off.
     const onKeyDownEnter: KeyDownType = function (e) {
         // console.log(e.code);
         if (e.code === "Enter" && inputs.material.length > 1) {
@@ -82,8 +85,14 @@ const Main: React.FC = function () {
                     <span>{heart}</span>
                 </header>
                 <div className="block-down-field">
-                    <p className="block" style={{ top: `${downMenuNum}px` }}>
-                        {Menu[randomArr]}
+                    <p
+                        className="block"
+                        style={{
+                            top: `${downMenuNum}px`,
+                            display: displaySwitch,
+                        }}
+                    >
+                        {Menu[randomNum]}
                     </p>
                     {/* <span
                         className="raining"
