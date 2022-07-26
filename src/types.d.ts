@@ -1,4 +1,4 @@
-import React from "react";
+import React, { SetStateAction } from "react";
 
 export type OnChangeType = (
     e: React.ChangeEnvent<HTMLInputElement>,
@@ -6,4 +6,10 @@ export type OnChangeType = (
     setState: any
 ) => void;
 
-export type KeyDownType = (e: React.KeyboardEvent) => void;
+export type KeyDownType = (
+    e: React.KeyboardEvent,
+    inputs: { material: string },
+    setInputs: SetStateAction,
+    stack: (string | undefined)[],
+    setStack: SetStateAction
+) => void;

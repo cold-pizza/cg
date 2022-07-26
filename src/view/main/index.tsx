@@ -1,7 +1,9 @@
 import { useHistory } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import "./style.scss";
-import { OnChangeType, KeyDownType } from "../../types";
+import { OnChangeType } from "../../types";
+
+import onKeyDownEnter from "../../func/onKeyDownEnter";
 
 const Main: React.FC = function () {
     const randomNum = Math.floor(Math.random() * 10);
@@ -52,29 +54,7 @@ const Main: React.FC = function () {
     useEffect(() => {
         dropDownMenu();
     }, []);
-    const onKeyDownEnter: KeyDownType = function (e) {
-        // console.log(e.code);
-        if (e.code === "Enter" && inputs.material.length > 1) {
-            setInputs({ material: "" });
-            for (let i = 0; i < 3; i++) {
-                if (stack[i] === stack[i + 1]) {
-                    console.log("중복되는 재료가 있습니다.");
-                    setInputs({ material: "" });
-                } else {
-                    if (stack[0] === undefined) {
-                        setStack([inputs.material]);
-                        setInputs({ material: "" });
-                    }
-                    if (stack[1] === undefined || stack[2] === undefined) {
-                        setStack([...stack, inputs.material]);
-                        setInputs({ material: "" });
-                    } else {
-                        setStack([stack[1], stack[2], inputs.material]);
-                    }
-                }
-            }
-        }
-    };
+
     return (
         <div className="main">
             <p>main view</p>
@@ -112,7 +92,15 @@ const Main: React.FC = function () {
                         onChange={(e) => onChange(e, inputs, setInputs)}
                         name="material"
                         value={inputs.material}
-                        onKeyDown={onKeyDownEnter}
+                        onKeyDown={(e) =>
+                            onKeyDownEnter(
+                                e,
+                                inputs,
+                                setInputs,
+                                stack,
+                                setStack
+                            )
+                        }
                         type="text"
                         placeholder="재료를 입력하세요"
                     />
