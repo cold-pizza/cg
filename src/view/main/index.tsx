@@ -2,11 +2,16 @@ import { useHistory } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import "./style.scss";
 import { OnChangeType } from "../../types";
+import recipe from "../../recipe.json";
 
 import onKeyDownEnter from "../../func/onKeyDownEnter";
+// 7/27 할 일.⬇️
+// 시작 버튼 추가.
 
 const Main: React.FC = function () {
+    console.log(recipe.vanillaLatte);
     const randomNum = Math.floor(Math.random() * 10);
+    const [rNum, setRnum] = useState(0);
     const Menu = [
         "아메리카노(I)",
         "아메리카노(H)",
@@ -20,40 +25,55 @@ const Main: React.FC = function () {
         "흑당카페라떼",
     ];
     const [downMenuNum, setDownMenuNUm] = useState(0);
-    const [rain, setRain] = useState(["10000", "22222", "3"]);
-    // 첫번째 단어 삽입.
-    // 1초마다 80px 다운.
-    // 반정도 내려오면 다음 단어 다운.
-    // 데드라인 충돌시 하트 삭제. 최근단어 삭제. 큐형식.
-    console.log(Menu[randomNum]);
+
+    // console.log(Menu[randomNum]);
     const history = useHistory();
     const [heart, setHeart] = useState("❤️ ❤️ ❤️");
     const [inputs, setInputs] = useState({ material: "" });
     const [stack, setStack] = useState([undefined, "", ""]);
     const [displaySwitch, setDisplaySwitch] = useState("block");
+    const [timeCount, setTimeCount] = useState(3);
+    const [countSwitch, setCountSwitch] = useState("none");
     const onChange: OnChangeType = function (e, state, setState) {
         setState({ ...state, [e.target.name]: e.target.value });
     };
-    console.log(inputs);
+    // console.log(inputs);
 
-    // 1초마다 떨어지는 함수.
-    // + 데드라인 오버시 hide. display -> none.
     const dropDownMenu = function () {
-        let routine = setInterval(() => {
-            setDownMenuNUm((downMenuNum) => downMenuNum + 97);
+        setTimeCount(3);
+        setCountSwitch("block");
+        let count = setInterval(() => {
+            setTimeCount((timeCount) => timeCount - 1);
         }, 1000);
         setTimeout(() => {
-            clearInterval(routine);
-            console.log("정지");
-        }, 5000);
-        setTimeout(() => {
-            setDisplaySwitch("none");
-        }, 6000);
+            setCountSwitch("none");
+            clearInterval(count);
+            setDownMenuNUm(0);
+            if (displaySwitch === "none") {
+                setDisplaySwitch("block");
+            }
+            setRnum(randomNum);
+            let routine = setInterval(() => {
+                setDownMenuNUm((downMenuNum) => downMenuNum + 53.8);
+            }, 1000);
+            setTimeout(() => {
+                clearInterval(routine);
+                console.log("정지");
+            }, 9000);
+            setTimeout(() => {
+                setDisplaySwitch("none");
+            }, 10000);
+        }, 3000);
     };
 
-    useEffect(() => {
-        dropDownMenu();
-    }, []);
+    const clearMenu = function () {
+        // 리스트 내용이 레시피에 부합하면
+        // array pop
+    };
+
+    // useEffect(() => {
+    //     dropDownMenu();
+    // }, []);
 
     return (
         <div className="main">
@@ -72,16 +92,19 @@ const Main: React.FC = function () {
                             display: displaySwitch,
                         }}
                     >
-                        {Menu[randomNum]}
+                        {Menu[rNum]}
                     </p>
-                    {/* <span
-                        className="raining"
-                    >
-                        {rain[0]}
-                    </span> */}
+                    {countSwitch ? (
+                        <p
+                            style={{ display: countSwitch }}
+                            className="time-count"
+                        >
+                            {timeCount}
+                        </p>
+                    ) : null}
                 </div>
                 <ul className="stack">
-                    LIST
+                    ⭐️LIST⭐️
                     <li>{stack[0]}</li>
                     <li>{stack[1]}</li>
                     <li>{stack[2]}</li>
@@ -107,6 +130,8 @@ const Main: React.FC = function () {
                     <button>push</button>
                 </footer>
             </section>
+            <button onClick={() => dropDownMenu()}>시작</button>
+            <button>초기화</button>
             <button onClick={() => history.goBack()}>뒤로가기</button>
         </div>
     );

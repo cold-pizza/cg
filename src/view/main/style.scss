@@ -32,6 +32,11 @@
         height: 500px;
         border: 1px solid blue;
         border-bottom: 2px solid red;
+        .time-count {
+            position: absolute;
+            top: 200px;
+            left: 380px;
+        }
         .block {
             position: absolute;
             display: block;
